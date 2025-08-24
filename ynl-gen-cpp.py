@@ -1486,7 +1486,8 @@ class CodeWriter:
 
         self._nl = False
         self._block_end = False
-        self._silent_block = False
+        self._silent_block_brace = True
+        self._silent_block_num = 0
         self._ind = 0
         self._ifdef_block = None
         if out_file is None:
@@ -1533,14 +1534,26 @@ class CodeWriter:
         ind = self._ind
         if line[-1] == ":":
             ind -= 1
-        if self._silent_block:
-            ind += 1
-        self._silent_block = line.endswith(")") and CodeWriter._is_cond(line)
+        ind += self._silent_block_num
+        is_silent_block = line.endswith(")") and CodeWriter._is_cond(line)
         if line[0] == "#":
             ind = 0
         if add_ind:
             ind += add_ind
-        self._out.write("\t" * ind + line + "\n")
+
+        if is_silent_block and self._silent_block_brace:
+            self._out.write("\t" * ind + line + " {\n")
+        else:
+            self._out.write("\t" * ind + line + "\n")
+        if is_silent_block:
+            self._silent_block_num += 1
+        elif self._silent_block_brace:
+            while self._silent_block_num > 0:
+                self._silent_block_num -= 1
+                ind -= 1
+                self._out.write("\t" * ind + "}\n")
+        else:
+            self._silent_block_num = 0
 
     def nl(self):
         self._nl = True
