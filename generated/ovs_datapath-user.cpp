@@ -14,8 +14,8 @@
 namespace ynl_cpp {
 
 /* Enums */
-static constexpr std::array<std::string_view, OVS_DP_CMD_DEL + 1> ovs_datapath_op_strmap = []() {
-	std::array<std::string_view, OVS_DP_CMD_DEL + 1> arr{};
+static constexpr std::array<std::string_view, OVS_DP_CMD_GET + 1> ovs_datapath_op_strmap = []() {
+	std::array<std::string_view, OVS_DP_CMD_GET + 1> arr{};
 	arr[OVS_DP_CMD_GET] = "get";
 	arr[OVS_DP_CMD_NEW] = "new";
 	arr[OVS_DP_CMD_DEL] = "del";
@@ -193,7 +193,7 @@ ovs_datapath_get_dump(ynl_cpp::ynl_socket& ys, ovs_datapath_get_req_dump& req)
 	yds.yarg.ys = ys;
 	yds.yarg.rsp_policy = &ovs_datapath_datapath_nest;
 	yds.yarg.data = ret.get();
-	yds.alloc_cb = [](void* arg)->void*{return &(static_cast<ovs_datapath_get_list*>(arg)->objs.emplace_back());};
+	yds.alloc_cb = [](void* arg)->void* {return &(static_cast<ovs_datapath_get_list*>(arg)->objs.emplace_back());};
 	yds.cb = ovs_datapath_get_rsp_parse;
 	yds.rsp_cmd = OVS_DP_CMD_GET;
 

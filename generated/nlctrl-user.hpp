@@ -16,6 +16,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <array>
 
 #include "ynl.hpp"
 
@@ -96,24 +97,24 @@ nlctrl_getfamily_dump(ynl_cpp::ynl_socket& ys);
 
 /* ============== CTRL_CMD_GETPOLICY ============== */
 /* CTRL_CMD_GETPOLICY - dump */
-struct nlctrl_getpolicy_req_dump {
+struct nlctrl_getpolicy_req {
 	std::string family_name;
 	std::optional<__u16> family_id;
 	std::optional<__u32> op;
 };
 
-struct nlctrl_getpolicy_rsp_dump {
+struct nlctrl_getpolicy_rsp {
 	std::optional<__u16> family_id;
 	std::optional<nlctrl_op_policy_attrs> op_policy;
 	std::optional<nlctrl_policy_attrs> policy;
 };
 
-struct nlctrl_getpolicy_rsp_list {
-	std::list<nlctrl_getpolicy_rsp_dump> objs;
+struct nlctrl_getpolicy_list {
+	std::list<nlctrl_getpolicy_rsp> objs;
 };
 
-std::unique_ptr<nlctrl_getpolicy_rsp_list>
-nlctrl_getpolicy_dump(ynl_cpp::ynl_socket& ys, nlctrl_getpolicy_req_dump& req);
+std::unique_ptr<nlctrl_getpolicy_list>
+nlctrl_getpolicy_dump(ynl_cpp::ynl_socket& ys, nlctrl_getpolicy_req& req);
 
 } //namespace ynl_cpp
 #endif /* _LINUX_NLCTRL_GEN_H */
