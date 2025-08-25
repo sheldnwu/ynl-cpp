@@ -478,7 +478,7 @@ nlctrl_getfamily_dump(ynl_cpp::ynl_socket& ys)
 	yds.yarg.ys = ys;
 	yds.yarg.rsp_policy = &nlctrl_ctrl_attrs_nest;
 	yds.yarg.data = ret.get();
-	yds.alloc_cb = [](void* arg)->void*{return &(static_cast<nlctrl_getfamily_list*>(arg)->objs.emplace_back());};
+	yds.alloc_cb = [](void* arg)->void* {return &(static_cast<nlctrl_getfamily_list*>(arg)->objs.emplace_back());};
 	yds.cb = nlctrl_getfamily_rsp_parse;
 	yds.rsp_cmd = 1;
 
@@ -494,14 +494,14 @@ nlctrl_getfamily_dump(ynl_cpp::ynl_socket& ys)
 
 /* ============== CTRL_CMD_GETPOLICY ============== */
 /* CTRL_CMD_GETPOLICY - dump */
-int nlctrl_getpolicy_rsp_dump_parse(const struct nlmsghdr *nlh,
-				    struct ynl_parse_arg *yarg)
+int nlctrl_getpolicy_rsp_parse(const struct nlmsghdr *nlh,
+			       struct ynl_parse_arg *yarg)
 {
-	nlctrl_getpolicy_rsp_dump *dst;
+	nlctrl_getpolicy_rsp *dst;
 	const struct nlattr *attr;
 	struct ynl_parse_arg parg;
 
-	dst = (nlctrl_getpolicy_rsp_dump*)yarg->data;
+	dst = (nlctrl_getpolicy_rsp*)yarg->data;
 	parg.ys = yarg->ys;
 
 	ynl_attr_for_each(attr, nlh, yarg->ys->family->hdr_len) {
@@ -546,19 +546,19 @@ int nlctrl_getpolicy_rsp_dump_parse(const struct nlmsghdr *nlh,
 	return YNL_PARSE_CB_OK;
 }
 
-std::unique_ptr<nlctrl_getpolicy_rsp_list>
-nlctrl_getpolicy_dump(ynl_cpp::ynl_socket& ys, nlctrl_getpolicy_req_dump& req)
+std::unique_ptr<nlctrl_getpolicy_list>
+nlctrl_getpolicy_dump(ynl_cpp::ynl_socket& ys, nlctrl_getpolicy_req& req)
 {
 	struct ynl_dump_no_alloc_state yds = {};
 	struct nlmsghdr *nlh;
 	int err;
 
-	auto ret = std::make_unique<nlctrl_getpolicy_rsp_list>();
+	auto ret = std::make_unique<nlctrl_getpolicy_list>();
 	yds.yarg.ys = ys;
 	yds.yarg.rsp_policy = &nlctrl_ctrl_attrs_nest;
 	yds.yarg.data = ret.get();
-	yds.alloc_cb = [](void* arg)->void*{return &(static_cast<nlctrl_getpolicy_rsp_list*>(arg)->objs.emplace_back());};
-	yds.cb = nlctrl_getpolicy_rsp_dump_parse;
+	yds.alloc_cb = [](void* arg)->void* {return &(static_cast<nlctrl_getpolicy_list*>(arg)->objs.emplace_back());};
+	yds.cb = nlctrl_getpolicy_rsp_parse;
 	yds.rsp_cmd = CTRL_CMD_GETPOLICY;
 
 	nlh = ynl_gemsg_start_dump(ys, ((struct ynl_sock*)ys)->family_id, CTRL_CMD_GETPOLICY, 1);
